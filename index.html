@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pemesanan Tiket Nonton</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #007BFF;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+        }
+        .container {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        .movie-select {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Aplikasi Pemesanan Tiket Nonton
+</header>
+
+<div class="container">
+    <div class="movie-select">
+        <label for="movieSelect">Pilih Film:</label>
+        <select id="movieSelect">
+            <option value="">-- Pilih Film --</option>
+            <option value="Film A">Film A</option>
+            <option value="Film B">Film B</option>
+            <option value="Film C">Film C</option>
+        </select>
+
+        <label for="timeSelect">Waktu:</label>
+        <select id="timeSelect">
+            <option value="">-- Pilih Waktu --</option>
+            <option value="12:00">12:00</option>
+            <option value="15:00">15:00</option>
+            <option value="18:00">18:00</option>
+            <option value="21:00">21:00</option>
+        </select>
+
+        <label for="ticketCount">Jumlah Tiket:</label>
+        <input type="number" id="ticketCount" min="1" value="1" style="width: 50px;">
+        <button onclick="addTicket()">Pesan Tiket</button>
+    </div>
+
+    <table id="ticketTable">
+        <thead>
+            <tr>
+                <th>Film</th>
+                <th>Waktu</th>
+                <th>Jumlah Tiket</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="ticketBody">
+            <tr>
+                <td colspan="4" style="text-align: center;">Belum ada tiket yang dipesan.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer>
+    Copyright: Putrinengsi (2255201179)
+</footer>
+
+<script>
+    let tickets = [];
+
+    function addTicket() {
+        const movie = document.getElementById('movieSelect').value;
+        const time = document.getElementById('timeSelect').value;
+        const ticketCount = parseInt(document.getElementById('ticketCount').value);
+
+        if (movie && time && ticketCount > 0) {
+            tickets.push({ movie, time, ticketCount });
+            updateTicketTable();
+            clearSelection();
+        } else {
+            alert("Silakan pilih film, waktu, dan jumlah tiket yang valid.");
+        }
+    }
+
+    function updateTicketTable() {
+        const ticketBody = document.getElementById('ticketBody');
+        ticketBody.innerHTML = ''; // Clear existing rows
+
+        tickets.forEach((ticket, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${ticket.movie}</td>
+                <td>${ticket.time}</td>
+                <td>${ticket.ticketCount}</td>
+                <td>
+                    <button onclick="deleteTicket(${index})">Hapus</button>
+                </td>
+            `;
+            ticketBody.appendChild(row);
+        });
+
+        if (tickets.length === 0) {
+            ticketBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Belum ada tiket yang dipesan.</td></tr>';
+        }
+    }
+
+    function deleteTicket(index) {
+        tickets.splice(index, 1);
+        updateTicketTable();
+    }
+
+    function clearSelection() {
+        document.getElementById('movieSelect').value = '';
+        document.getElementById('timeSelect').value = '';
+        document.getElementById('ticketCount').value = 1;
+    }
+</script>
+
+</body>
+</html>
