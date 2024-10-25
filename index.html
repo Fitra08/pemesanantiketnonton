@@ -7,13 +7,13 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
             color: #333;
         }
         header {
-            background-color: #007BFF;
+            background-color: #343a40;
             padding: 20px;
             text-align: center;
             color: white;
@@ -21,46 +21,64 @@
         }
         .container {
             padding: 20px;
+            max-width: 800px;
+            margin: auto;
         }
-        table {
+        .movie-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .movie-details {
+            flex: 1;
+        }
+        .movie-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .movie-time {
+            color: #555;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .ticket-table {
+            margin-top: 20px;
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
-        th, td {
+        .ticket-table th, .ticket-table td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
         }
-        th {
-            background-color: #007BFF;
+        .ticket-table th {
+            background-color: #007bff;
             color: white;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
         }
         footer {
-            background-color: #007BFF;
+            background-color: #343a40;
             color: white;
             text-align: center;
             padding: 10px;
             position: relative;
             bottom: 0;
             width: 100%;
-        }
-        .hidden {
-            display: none;
-        }
-        .movie-select {
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -71,30 +89,34 @@
 </header>
 
 <div class="container">
-    <div class="movie-select">
-        <label for="movieSelect">Pilih Film:</label>
-        <select id="movieSelect">
-            <option value="">-- Pilih Film --</option>
-            <option value="Film A">Film A</option>
-            <option value="Film B">Film B</option>
-            <option value="Film C">Film C</option>
-        </select>
-
-        <label for="timeSelect">Waktu:</label>
-        <select id="timeSelect">
-            <option value="">-- Pilih Waktu --</option>
-            <option value="12:00">12:00</option>
-            <option value="15:00">15:00</option>
-            <option value="18:00">18:00</option>
-            <option value="21:00">21:00</option>
-        </select>
-
-        <label for="ticketCount">Jumlah Tiket:</label>
-        <input type="number" id="ticketCount" min="1" value="1" style="width: 50px;">
-        <button onclick="addTicket()">Pesan Tiket</button>
+    <h2>Pilih Film dan Waktu</h2>
+    
+    <div class="movie-card">
+        <div class="movie-details">
+            <div class="movie-title">Film A</div>
+            <div class="movie-time">Waktu: 12:00, 15:00, 18:00</div>
+        </div>
+        <button class="button" onclick="addTicket('Film A')">Pesan Tiket</button>
     </div>
 
-    <table id="ticketTable">
+    <div class="movie-card">
+        <div class="movie-details">
+            <div class="movie-title">Film B</div>
+            <div class="movie-time">Waktu: 15:00, 18:00, 21:00</div>
+        </div>
+        <button class="button" onclick="addTicket('Film B')">Pesan Tiket</button>
+    </div>
+
+    <div class="movie-card">
+        <div class="movie-details">
+            <div class="movie-title">Film C</div>
+            <div class="movie-time">Waktu: 12:00, 18:00</div>
+        </div>
+        <button class="button" onclick="addTicket('Film C')">Pesan Tiket</button>
+    </div>
+
+    <h2>Tiket yang Dipesan</h2>
+    <table class="ticket-table">
         <thead>
             <tr>
                 <th>Film</th>
@@ -118,17 +140,15 @@
 <script>
     let tickets = [];
 
-    function addTicket() {
-        const movie = document.getElementById('movieSelect').value;
-        const time = document.getElementById('timeSelect').value;
-        const ticketCount = parseInt(document.getElementById('ticketCount').value);
+    function addTicket(movie) {
+        const time = prompt(`Masukkan waktu untuk ${movie} (12:00, 15:00, 18:00, 21:00):`);
+        const ticketCount = parseInt(prompt("Masukkan jumlah tiket:"));
 
-        if (movie && time && ticketCount > 0) {
+        if (time && ticketCount > 0) {
             tickets.push({ movie, time, ticketCount });
             updateTicketTable();
-            clearSelection();
         } else {
-            alert("Silakan pilih film, waktu, dan jumlah tiket yang valid.");
+            alert("Silakan masukkan waktu dan jumlah tiket yang valid.");
         }
     }
 
@@ -143,7 +163,7 @@
                 <td>${ticket.time}</td>
                 <td>${ticket.ticketCount}</td>
                 <td>
-                    <button onclick="deleteTicket(${index})">Hapus</button>
+                    <button class="button" onclick="deleteTicket(${index})">Hapus</button>
                 </td>
             `;
             ticketBody.appendChild(row);
@@ -157,12 +177,6 @@
     function deleteTicket(index) {
         tickets.splice(index, 1);
         updateTicketTable();
-    }
-
-    function clearSelection() {
-        document.getElementById('movieSelect').value = '';
-        document.getElementById('timeSelect').value = '';
-        document.getElementById('ticketCount').value = 1;
     }
 </script>
 
